@@ -1,12 +1,28 @@
 <!DOCTYPE html>
 <html lang="ru">
-<body>
-  <button id="startBtn">Начать сканирование</button>
+<body style="font-size:20px; padding:20px;">
 
-  <video id="video" autoplay playsinline style="width:100%; display:none;"></video>
+  <button id="startBtn"
+    style="
+      width:100%;
+      padding:20px;
+      font-size:24px;
+      border-radius:12px;
+      border:1px solid #ccc;
+      background:#f0f0f0;
+    ">
+    Начать сканирование
+  </button>
+
+  <video id="video"
+    autoplay
+    playsinline
+    style="width:100%; display:none; margin-top:20px; border-radius:12px;">
+  </video>
+
   <canvas id="canvas" style="display:none;"></canvas>
 
-  <div id="result" style="margin-top:15px; font-size:18px;"></div>
+  <div id="result" style="margin-top:20px; font-size:24px;"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 <script>
