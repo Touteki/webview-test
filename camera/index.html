@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+  <video id="video" autoplay playsinline style="width: 100%;"></video>
+  <div id="status"></div>
+
+<script>
+(async () => {
+  const status = document.getElementById('status');
+  const video = document.getElementById('video');
+
+  // 1. Проверка поддержки BarcodeDetector
+  const supported = ('BarcodeDetector' in window);
+  if (!supported) {
+    status.textContent = 'BarcodeDetector не поддерживается в этом браузере';
+  }
+
+  // 2. Запрос камеры
+  let stream;
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: "environment" }
+    });
+  } catch (e) {
+    status.textContent = 'Нет доступа к камере';
+    return;
+  }
+
+  video.srcObject = stream;
+
+  if (!supported) return;
+
+  // 3. Инициализация детектора
+  const detector = new BarcodeDetector({ formats: ['qr_code'] });
+
+  // 4. Чтение в цикле
+  async function scan() {
+    try {
+      const barcodes = await detector.detect(video);
+      if (barcodes.length > 0) {
+        status.textContent = 'QR найден: ' + barcodes[0].rawValue;
+        return; // прекращаем после первого найденного
+      }
+    } catch (e) {
+      // Если ошибка — просто пробуем снова
+    }
+    requestAnimationFrame(scan);
+  }
+
+  scan();
+})();
+</script>
+</body>
+</html>
