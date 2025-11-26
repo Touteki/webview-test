@@ -1,54 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <body>
-  <video id="video" autoplay playsinline style="width: 100%;"></video>
-  <div id="status"></div>
+  <button id="startBtn">Начать сканирование</button>
 
+  <video id="video" autoplay playsinline style="width:100%; display:none;"></video>
+  <canvas id="canvas" style="display:none;"></canvas>
+
+  <div id="result" style="margin-top:15px; font-size:18px;"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 <script>
-(async () => {
-  const status = document.getElementById('status');
-  const video = document.getElementById('video');
+const startBtn = document.getElementById('startBtn');
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const result = document.getElementById('result');
 
-  // 1. Проверка поддержки BarcodeDetector
-  const supported = ('BarcodeDetector' in window);
-  if (!supported) {
-    status.textContent = 'BarcodeDetector не поддерживается в этом браузере';
-  }
+let scanning = false;
 
-  // 2. Запрос камеры
+startBtn.onclick = async () => {
+  result.textContent = "";
+  scanning = true;
+
   let stream;
   try {
     stream = await navigator.mediaDevices.getUserMedia({
       video: { facingMode: "environment" }
     });
-  } catch (e) {
-    status.textContent = 'Нет доступа к камере';
+  } catch(e) {
+    result.textContent = "Нет доступа к камере";
     return;
   }
 
   video.srcObject = stream;
+  video.style.display = 'block';
 
-  if (!supported) return;
+  requestAnimationFrame(scan);
+};
 
-  // 3. Инициализация детектора
-  const detector = new BarcodeDetector({ formats: ['qr_code'] });
+function scan() {
+  if (!scanning) return;
 
-  // 4. Чтение в цикле
-  async function scan() {
-    try {
-      const barcodes = await detector.detect(video);
-      if (barcodes.length > 0) {
-        status.textContent = 'QR найден: ' + barcodes[0].rawValue;
-        return; // прекращаем после первого найденного
+  if (video.readyState === video.HAVE_ENOUGH_DATA) {
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+    const code = jsQR(img.data, canvas.width, canvas.height);
+
+    if (code) {
+      scanning = false;
+
+      result.textContent = "QR: " + code.data;
+
+      const stream = video.srcObject;
+      if (stream) {
+        stream.getTracks().forEach(t => t.stop());
       }
-    } catch (e) {
-      // Если ошибка — просто пробуем снова
+
+      video.style.display = 'none';
+      return;
     }
-    requestAnimationFrame(scan);
   }
 
-  scan();
-})();
+  requestAnimationFrame(scan);
+}
 </script>
 </body>
 </html>
