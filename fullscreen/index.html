@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Demo — full height + curtain</title>
+<style>
+  :root{
+    --bg-dark: #02122a;       /* тёмно-синий фон страницы */
+    --curtain-height: 256px;  /* высота шторки (points) */
+    --curtain-radius: 24px;
+  }
+
+  /* Обязательное: real viewport height для iOS WKWebView */
+  html, body {
+    height: -webkit-fill-available; /* растянуть по доступной высоте */
+    margin: 0;
+    padding: 0;
+    background: var(--bg-dark);
+    color: #fff;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    -webkit-font-smoothing:antialiased;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Основной контейнер — растягиваемся по высоте и даём отступ сверху под вырез */
+  .app {
+    min-height: -webkit-fill-available;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  /* Контент страницы, учитываем верхний safe area */
+  .content {
+    padding: calc(env(safe-area-inset-top, 0px) + 24px) 20px 20px;
+    box-sizing: border-box;
+  }
+
+  h1 {
+    margin: 0 0 8px 0;
+    font-size: 28px;
+    line-height: 1.15;
+  }
+
+  p {
+    margin: 0 0 12px 0;
+    color: rgba(255,255,255,0.85);
+  }
+
+  /* Шторка внизу — фиксирована, поверх контента */
+  .curtain {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* учтём нижний safe area: фактичесная высота = 256 + inset */
+    height: calc(var(--curtain-height) + env(safe-area-inset-bottom, 0px));
+    /* закруглённые верхние углы */
+    border-top-left-radius: var(--curtain-radius);
+    border-top-right-radius: var(--curtain-radius);
+    background: linear-gradient(180deg, #0f1724 0%, #0b1220 100%); /* чуть контрастнее тёмно-синего */
+    box-shadow: 0 -8px 30px rgba(0,0,0,0.45);
+    padding-top: 16px; /* отступ внутри шторки */
+    padding-bottom: env(safe-area-inset-bottom, 0px); /* чтобы элементы шторки не перекрывались системной панелью */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 40;
+    box-sizing: border-box;
+  }
+
+  /* Внутреннее содержимое шторки — фиксированная высота 256px (без учёта safe area) */
+  .curtain__inner {
+    height: var(--curtain-height);
+    width: 100%;
+    max-width: 720px;
+    box-sizing: border-box;
+    padding: 12px 20px;
+    color: #fff;
+  }
+
+  /* Примерная кнопка на шторке */
+  .btn {
+    display:inline-block;
+    background: linear-gradient(90deg,#3b82f6,#06b6d4);
+    padding: 10px 16px;
+    border-radius: 12px;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  /* Немного отступа у основного контента снизу, чтобы не скрывать под шторкой */
+  .spacer-bottom {
+    height: calc(var(--curtain-height) + env(safe-area-inset-bottom, 0px) - 24px);
+    /* -24 чтобы часть контента была чуть выше шторки; настройте по вкусу */
+  }
+
+  /* Адаптив: на больших экранах центруем контент */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+</style>
+</head>
+<body>
+  <div class="app">
+    <div class="content container">
+      <h1>Полноэкранный фон</h1>
+      <p>Страница занимает всю доступную высоту. Фон — тёмно-синий. Внизу — шторка высотой 256.</p>
+      <p>Верхний отступ учитывает безопасную зону через <code>env(safe-area-inset-top)</code>.</p>
+
+      <p>Положите тут ваш основной контент — он будет виден над шторкой. Чтобы контент не оказался под шторкой, внизу добавлен spacer.</p>
+
+      <div style="height:500px;"></div> <!-- демонстрация длинного контента -->
+
+      <div class="spacer-bottom" aria-hidden="true"></div>
+    </div>
+  </div>
+
+  <div class="curtain" role="dialog" aria-label="Шторка снизу">
+    <div class="curtain__inner">
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <div>
+          <div style="font-weight:700; font-size:18px;">Шторка</div>
+          <div style="font-size:13px; color:rgba(255,255,255,0.8);">Здесь можно поместить элементы управления</div>
+        </div>
+        <a href="#" class="btn">Действие</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
