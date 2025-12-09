@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Fullscreen с шторкой над safe area</title>
+<title>Fullscreen с шторкой на safe area</title>
 <style>
 :root{
   --bg-dark: #0d1a3a;       /* основной фон страницы */
@@ -50,60 +50,14 @@ p {
   color: rgba(255,255,255,0.85);
 }
 
-/* Шторка над нижней safe-area */
+/* Шторка, заходящая на нижнюю safe area */
 .curtain {
   position: fixed;
   left: 0;
   right: 0;
-  bottom: env(safe-area-inset-bottom, 0px); /* шторка не заходит в нижнюю safe area */
-  height: var(--curtain-height);
+  bottom: 0; /* шторка полностью до низа экрана */
+  height: calc(var(--curtain-height) + env(safe-area-inset-bottom, 0px));
   border-top-left-radius: var(--curtain-radius);
   border-top-right-radius: var(--curtain-radius);
-  background: #a3bffa; /* ярко-светлая, заметно светлее фона */
-  box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
-  padding: 16px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  z-index: 40;
-  box-sizing: border-box;
-}
-
-.curtain__inner {
-  width: 100%;
-  max-width: 720px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.btn {
-  display:inline-block;
-  background: linear-gradient(90deg,#3b82f6,#06b6d4);
-  padding: 10px 16px;
-  border-radius: 12px;
-  color: white;
-  text-decoration: none;
-  font-weight: 600;
-}
-</style>
-</head>
-<body>
-  <div class="app">
-    <div class="content">
-      <h1>Fullscreen без скрола</h1>
-      <p>Страница занимает всю высоту, скролла нет. Шторка располагается над нижней safe area.</p>
-    </div>
-  </div>
-
-  <div class="curtain" role="dialog" aria-label="Шторка снизу">
-    <div class="curtain__inner">
-      <div>
-        <div style="font-weight:700; font-size:18px;">Шторка</div>
-        <div style="font-size:13px; color:rgba(0,0,0,0.8);">Элементы управления</div>
-      </div>
-      <a href="#" class="btn">Действие</a>
-    </div>
-  </div>
-</body>
-</html>
+  background: #a3bffa; /* светлая шторка */
+  box-
