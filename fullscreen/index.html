@@ -7,14 +7,13 @@
 html, body {
     margin: 0;
     padding: 0;
-    height: 100vh;
+    height: 100vh; /* весь экран, включая сейф-ареа */
     background: #0d1a3a;
     overflow: hidden;
     font-family: system-ui;
     color: white;
 }
 
-/* увеличиваем высоту на safe-area, чтобы закрыть её шторкой */
 .page {
     position: relative;
     height: 100%;
@@ -24,19 +23,17 @@ html, body {
     box-sizing: border-box;
 }
 
-/* контент как обычно */
 .content {
     padding: 20px;
 }
 
-/* ШТoРКА перекрывает всю safe area */
 .curtain {
     position: fixed;
     left: 0;
     right: 0;
-    bottom: 0; /* реальный экранный низ */
-    height: calc(256px + env(safe-area-inset-bottom));
-    padding-bottom: env(safe-area-inset-bottom);
+    bottom: 0;
+    height: calc(256px + env(safe-area-inset-bottom)); /* учитываем высоту шторки + сейф-ареа */
+    padding-bottom: env(safe-area-inset-bottom); /* предотвращаем захождение контента в зону сейф-ареа */
     border-top-left-radius: 24px;
     border-top-right-radius: 24px;
     background: #a3bffa;
@@ -65,7 +62,7 @@ html, body {
 <div class="page">
     <div class="content">
         <h1>Fullscreen</h1>
-        <p>Работает без .never и перекрывает safe area.</p>
+        <p>Перекрывает safe area.</p>
     </div>
 </div>
 
