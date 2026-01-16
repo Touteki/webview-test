@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign in with Apple — test</title>
+
+    <!-- Apple JS SDK -->
+    <script src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>
+
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Sign in with Apple — проверка</h1>
+
+<div id="appleid-signin"
+     data-color="black"
+     data-border="true"
+     data-type="sign in"
+     style="width: 200px; height: 40px;">
+</div>
+
+<script>
+    AppleID.auth.init({
+        clientId: 'com.example.web',          // Service ID
+        scope: 'name email',
+        redirectURI: 'https://example.com/callback',
+        state: 'test_state',
+        usePopup: true
+    });
+
+    document.addEventListener('AppleIDSignInOnSuccess', (event) => {
+        console.log('SUCCESS:', event.detail);
+        alert('Успешный вход. См. console.log');
+    });
+
+    document.addEventListener('AppleIDSignInOnFailure', (event) => {
+        console.error('ERROR:', event.detail);
+        alert('Ошибка входа. См. console.log');
+    });
+</script>
+
+</body>
+</html>
