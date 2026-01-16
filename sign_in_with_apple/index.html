@@ -2,55 +2,46 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-
-    <!-- Обязательно для мобильных -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-
-    <title>Sign in with Apple</title>
-
-    <!-- Конфигурация Apple ДО загрузки SDK -->
-    <script>
-        window.appleidConfig = {
-            clientId: 'com.tinyforge.SignInWithAppleWeb',                 // Service ID
-            scope: 'name email',
-            redirectURI: 'https://touteki.github.io/webview-test/fullscreen/', // должен совпадать 1:1
-            state: 'mobile_login',
-            usePopup: true
-        };
-    </script>
+    <title>Sign in with Apple — test</title>
 
     <!-- Apple JS SDK -->
     <script src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>
 
     <style>
         body {
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #ffffff;
+            font-family: sans-serif;
+            padding: 40px;
         }
     </style>
 </head>
 <body>
 
-<!-- Кнопка Apple: чёрная, только логотип -->
-<div
-    id="appleid-signin"
-    data-type="icon"
-    data-color="black"
-    data-border="false"
-    style="width:48px; height:48px;"
-></div>
+<h1>Sign in with Apple — проверка</h1>
+
+<div id="appleid-signin"
+     data-color="black"
+     data-border="true"
+     data-type="sign in"
+     style="width: 200px; height: 40px;">
+</div>
 
 <script>
+    AppleID.auth.init({
+        clientId: 'com.tinyforge.SignInWithAppleWeb',          // Service ID
+        scope: 'name email',
+        redirectURI: '',
+        state: 'test_state',
+        usePopup: true
+    });
+
     document.addEventListener('AppleIDSignInOnSuccess', (event) => {
-        console.log('Apple Sign In success:', event.detail);
+        console.log('SUCCESS:', event.detail);
+        alert('Успешный вход. См. console.log');
     });
 
     document.addEventListener('AppleIDSignInOnFailure', (event) => {
-        console.error('Apple Sign In error:', event.detail);
+        console.error('ERROR:', event.detail);
+        alert('Ошибка входа. См. console.log');
     });
 </script>
 
