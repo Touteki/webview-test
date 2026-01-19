@@ -35,7 +35,7 @@
     });
 
     document.addEventListener('AppleIDSignInOnSuccess', (event) => {
-        console.log('SUCCESS:', event.detail);
+        console.log('SUCCESS:', event.detail.id_token);
         alert('Успешный вход. См. console.log');
     });
 
