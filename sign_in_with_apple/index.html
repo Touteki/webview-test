@@ -45,7 +45,7 @@
 
     document.addEventListener('AppleIDSignInOnSuccess', (event) => {
         // Получаем authorization code (для popup-флоу)
-        const token = event.detail.authorization.code;
+        const token = event.detail.authorization.id_token;
 
         // Выводим в текстовое поле
         const textarea = document.getElementById('full-token');
