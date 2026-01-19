@@ -12,6 +12,12 @@
             font-family: sans-serif;
             padding: 40px;
         }
+        textarea {
+            width: 100%;
+            height: 200px;
+            margin-top: 20px;
+            font-family: monospace;
+        }
     </style>
 </head>
 <body>
@@ -25,9 +31,12 @@
      style="width: 200px; height: 40px;">
 </div>
 
+<!-- Поле для полного токена -->
+<textarea id="full-token" readonly placeholder="Токен появится здесь после входа..."></textarea>
+
 <script>
     AppleID.auth.init({
-        clientId: 'com.tinyforge.SignInWithAppleWeb',          // Service ID
+        clientId: 'com.tinyforge.SignInWithAppleWeb',
         scope: 'name email',
         redirectURI: 'https://touteki.github.io/webview-test/fullscreen/',
         state: 'test_state',
@@ -35,13 +44,19 @@
     });
 
     document.addEventListener('AppleIDSignInOnSuccess', (event) => {
-        console.log('SUCCESS:', event.detail.authorization.id_token);
-        alert('Успешный вход. См. console.log');
+        // Получаем authorization code (для popup-флоу)
+        const token = event.detail.authorization.code;
+
+        // Выводим в текстовое поле
+        const textarea = document.getElementById('full-token');
+        textarea.value = token;
+
+        alert('Успешный вход. Токен выведен в поле ниже.');
     });
 
     document.addEventListener('AppleIDSignInOnFailure', (event) => {
         console.error('ERROR:', event.detail);
-        alert('Ошибка входа. См. console.log');
+        alert('Ошибка входа. См. консоль.');
     });
 </script>
 
