@@ -24,6 +24,8 @@
 
 <h1>Sign in with Apple — проверка</h1>
 
+<button id="apple-signin-btn">Sign in with Apple</button>
+    
 <div id="appleid-signin"
      data-color="black"
      data-border="true"
@@ -59,6 +61,17 @@
         console.error('ERROR:', event.detail);
         alert('Ошибка входа. См. консоль.');
     });
+
+    document.getElementById('apple-signin-btn').addEventListener('click', async () => {
+    try {
+        const data = await AppleID.auth.signIn()
+        // Handle successful response.
+        console.log('Success:', data)
+    } catch (error) {
+        // Handle error.
+        console.error('Error:', error)
+    }
+    })
 </script>
 
 </body>
