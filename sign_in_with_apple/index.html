@@ -25,13 +25,6 @@
 <h1>Sign in with Apple — проверка</h1>
 
 <button id="apple-signin-btn">Sign in with Apple</button>
-    
-<div id="appleid-signin"
-     data-color="black"
-     data-border="true"
-     data-type="sign in"
-     style="width: 200px; height: 40px;">
-</div>
 
 <!-- Поле для полного токена -->
 <textarea id="full-token" readonly placeholder="Токен появится здесь после входа..."></textarea>
@@ -44,24 +37,7 @@
         state: 'test_state',
         usePopup: true
     });
-
-    document.addEventListener('AppleIDSignInOnSuccess', (event) => {
-        // Получаем authorization code (для popup-флоу)
-        const token = event.detail.authorization.id_token;
-
-        // Выводим в текстовое поле
-        const textarea = document.getElementById('full-token');
-        textarea.value = token;
-
-        console.log(event.detail.user)
-        alert('Успешный вход. Токен выведен в поле ниже.');
-    });
-
-    document.addEventListener('AppleIDSignInOnFailure', (event) => {
-        console.error('ERROR:', event.detail);
-        alert('Ошибка входа. См. консоль.');
-    });
-
+    
     document.getElementById('apple-signin-btn').addEventListener('click', async () => {
     try {
         const data = await AppleID.auth.signIn()
