@@ -30,6 +30,9 @@
 <textarea id="full-token" readonly placeholder="Токен появится здесь после входа..."></textarea>
 
 <script>
+
+    
+    document.getElementById('apple-signin-btn').addEventListener('click', async () => {
     AppleID.auth.init({
         clientId: 'com.tinyforge.SignInWithAppleWeb',
         scope: 'name email',
@@ -37,8 +40,6 @@
         state: '-hRYNFE-tlmBZkbpI7MPbtbUpgQC5vBuFe_c-Utvlsc.RmvrmnEGxXw.8mUumUStS_ylfNMZ0vwGTw.eyJydSI6Imh0dHBzOi8vaWZ0LWFwcC5sb29uYWJyb3dzZXIucnUva2V5Y2xvYWsvYXdhaXQtdG9rZW4iLCJydCI6ImNvZGUifQ',
         usePopup: true,
     });
-    
-    document.getElementById('apple-signin-btn').addEventListener('click', async () => {
     try {
         const data = await AppleID.auth.signIn()
         // Handle successful response.
