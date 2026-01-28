@@ -33,9 +33,9 @@
     AppleID.auth.init({
         clientId: 'com.tinyforge.SignInWithAppleWeb',
         scope: 'name email',
-        redirectURI: 'https://touteki.github.io/webview-test/fullscreen/',
-        state: 'test_state',
-        usePopup: true
+        redirectURI: 'https://ift-app.loonabrowser.ru/keycloak/auth/realms/loona-id/broker/appleid/endpoint',
+        state: '-hRYNFE-tlmBZkbpI7MPbtbUpgQC5vBuFe_c-Utvlsc.RmvrmnEGxXw.8mUumUStS_ylfNMZ0vwGTw.eyJydSI6Imh0dHBzOi8vaWZ0LWFwcC5sb29uYWJyb3dzZXIucnUva2V5Y2xvYWsvYXdhaXQtdG9rZW4iLCJydCI6ImNvZGUifQ',
+        usePopup: true,
     });
     
     document.getElementById('apple-signin-btn').addEventListener('click', async () => {
