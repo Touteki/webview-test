@@ -124,11 +124,6 @@
       }
     }
 
-    // КРИТИЧНО: IndexedDB ТОЛЬКО по явному tap
-    document.getElementById('write').addEventListener('touchend', writeValue);
-    document.getElementById('read').addEventListener('touchend', readValue);
-
-    // fallback для Android / desktop
     document.getElementById('write').addEventListener('click', writeValue);
     document.getElementById('read').addEventListener('click', readValue);
   </script>
