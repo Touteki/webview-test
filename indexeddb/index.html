@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>IndexedDB test</title>
+</head>
+<body>
+  <h1>IndexedDB test</h1>
+
+  <button id="write">Write value</button>
+  <button id="read">Read value</button>
+
+  <pre id="log"></pre>
+
+  <script>
+    const DB_NAME = 'test_db';
+    const DB_VERSION = 1;
+    const STORE_NAME = 'kv';
+
+    const log = (msg) => {
+      document.getElementById('log').textContent += msg + '\n';
+      console.log(msg);
+    };
+
+    function openDb() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+        request.onupgradeneeded = (event) => {
+          log('onupgradeneeded');
+          const db = event.target.result;
+          if (!db.objectStoreNames.contains(STORE_NAME)) {
+            db.createObjectStore(STORE_NAME);
+          }
+        };
+
+        request.onsuccess = () => {
+          log('DB opened successfully');
+          resolve(request.result);
+        };
+
+        request.onerror = () => {
+          log('DB open error: ' + request.error);
+          reject(request.error);
+        };
+      });
+    }
+
+    async function writeValue() {
+      try {
+        const db = await openDb();
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+
+        store.put('hello indexeddb', 'testKey');
+
+        tx.oncomplete = () => {
+          log('Write completed');
+          db.close();
+        };
+
+        tx.onerror = () => {
+          log('Write error: ' + tx.error);
+        };
+      } catch (e) {
+        log('Write failed: ' + e);
+      }
+    }
+
+    async function readValue() {
+      try {
+        const db = await openDb();
+        const tx = db.transaction(STORE_NAME, 'readonly');
+        const store = tx.objectStore(STORE_NAME);
+
+        const request = store.get('testKey');
+
+        request.onsuccess = () => {
+          log('Read value: ' + request.result);
+          db.close();
+        };
+
+        request.onerror = () => {
+          log('Read error: ' + request.error);
+        };
+      } catch (e) {
+        log('Read failed: ' + e);
+      }
+    }
+
+    document.getElementById('write').onclick = writeValue;
+    document.getElementById('read').onclick = readValue;
+  </script>
+</body>
+</html>
