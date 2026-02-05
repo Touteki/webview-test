@@ -2,65 +2,100 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>IndexedDB test</title>
+  <title>IndexedDB Mobile Test</title>
+
+  <!-- КРИТИЧНО для мобильных -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      padding: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      margin-bottom: 12px;
+      font-size: 16px;
+    }
+
+    pre {
+      background: #f5f5f5;
+      padding: 12px;
+      height: 40vh;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+  </style>
 </head>
 <body>
-  <h1>IndexedDB test</h1>
 
-  <button id="write">Write value</button>
-  <button id="read">Read value</button>
+  <h2>IndexedDB mobile test</h2>
+
+  <button id="write">WRITE value</button>
+  <button id="read">READ value</button>
 
   <pre id="log"></pre>
 
   <script>
-    const DB_NAME = 'test_db';
+    const DB_NAME = 'mobile_test_db';
     const DB_VERSION = 1;
     const STORE_NAME = 'kv';
 
-    const log = (msg) => {
-      document.getElementById('log').textContent += msg + '\n';
+    const logEl = document.getElementById('log');
+
+    function log(msg) {
+      logEl.textContent += msg + '\n';
       console.log(msg);
-    };
+    }
 
     function openDb() {
       return new Promise((resolve, reject) => {
-        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        try {
+          const request = indexedDB.open(DB_NAME, DB_VERSION);
 
-        request.onupgradeneeded = (event) => {
-          log('onupgradeneeded');
-          const db = event.target.result;
-          if (!db.objectStoreNames.contains(STORE_NAME)) {
-            db.createObjectStore(STORE_NAME);
-          }
-        };
+          request.onupgradeneeded = (event) => {
+            log('onupgradeneeded');
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains(STORE_NAME)) {
+              db.createObjectStore(STORE_NAME);
+            }
+          };
 
-        request.onsuccess = () => {
-          log('DB opened successfully');
-          resolve(request.result);
-        };
+          request.onsuccess = () => {
+            log('DB opened');
+            resolve(request.result);
+          };
 
-        request.onerror = () => {
-          log('DB open error: ' + request.error);
-          reject(request.error);
-        };
+          request.onerror = () => {
+            log('DB open error: ' + request.error);
+            reject(request.error);
+          };
+        } catch (e) {
+          log('Exception during open: ' + e);
+          reject(e);
+        }
       });
     }
 
     async function writeValue() {
+      log('WRITE tapped');
       try {
         const db = await openDb();
         const tx = db.transaction(STORE_NAME, 'readwrite');
         const store = tx.objectStore(STORE_NAME);
 
-        store.put('hello indexeddb', 'testKey');
+        store.put('hello mobile indexeddb', 'key');
 
         tx.oncomplete = () => {
-          log('Write completed');
+          log('Write success');
           db.close();
         };
 
         tx.onerror = () => {
-          log('Write error: ' + tx.error);
+          log('Write tx error: ' + tx.error);
         };
       } catch (e) {
         log('Write failed: ' + e);
@@ -68,28 +103,35 @@
     }
 
     async function readValue() {
+      log('READ tapped');
       try {
         const db = await openDb();
         const tx = db.transaction(STORE_NAME, 'readonly');
         const store = tx.objectStore(STORE_NAME);
 
-        const request = store.get('testKey');
+        const req = store.get('key');
 
-        request.onsuccess = () => {
-          log('Read value: ' + request.result);
+        req.onsuccess = () => {
+          log('Read result: ' + req.result);
           db.close();
         };
 
-        request.onerror = () => {
-          log('Read error: ' + request.error);
+        req.onerror = () => {
+          log('Read req error: ' + req.error);
         };
       } catch (e) {
         log('Read failed: ' + e);
       }
     }
 
-    document.getElementById('write').onclick = writeValue;
-    document.getElementById('read').onclick = readValue;
+    // КРИТИЧНО: IndexedDB ТОЛЬКО по явному tap
+    document.getElementById('write').addEventListener('touchend', writeValue);
+    document.getElementById('read').addEventListener('touchend', readValue);
+
+    // fallback для Android / desktop
+    document.getElementById('write').addEventListener('click', writeValue);
+    document.getElementById('read').addEventListener('click', readValue);
   </script>
+
 </body>
 </html>
